@@ -1,0 +1,21 @@
+/ {
+
+    aliases {
+        ht-sensor = &hts;
+        pressure-sensor = &lps22hh;
+    };
+};
+
+&i2c0 {
+    status = "okay";
+    hts: hts221@5f {
+        compatible = "st,hts221";
+        reg = <0x5f>;
+    };
+
+    lps22hh: lps22hh@5d {
+        compatible = "st,lps22hh";
+        reg = <0x5d>;
+        drdy-gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>;
+    };
+};
