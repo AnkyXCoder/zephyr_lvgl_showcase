@@ -3,6 +3,7 @@
     aliases {
         ht-sensor = &hts;
         pressure-sensor = &lps22hh;
+        imu-sensor = &lsmdso;
     };
 };
 
@@ -17,5 +18,12 @@
         compatible = "st,lps22hh";
         reg = <0x5d>;
         drdy-gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>;
+    };
+
+    lsmdso: lsm6dso@6b {
+        compatible = "st,lsm6dso";
+        reg = <0x6b>;
+        irq-gpios = <&gpio0 11 GPIO_ACTIVE_HIGH>;
+        int-pin = <2>;
     };
 };

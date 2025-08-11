@@ -3,6 +3,7 @@
     aliases {
         ht-sensor = &hts;
         pressure-sensor = &lps22hh;
+        imu-sensor = &lsmdso;
     };
 };
 
@@ -16,5 +17,12 @@ arduino_i2c: &i2c1 {
         compatible = "st,lps22hh";
         reg = <0x5d>;
         drdy-gpios = <&arduino_header 12 GPIO_ACTIVE_HIGH>; /* D6 */
+    };
+
+    lsmdso: lsm6dso@6b {
+        compatible = "st,lsm6dso";
+        reg = <0x6b>;
+        irq-gpios = <&arduino_header 11 GPIO_ACTIVE_HIGH>; /* D5 */
+        int-pin = <2>;
     };
 };

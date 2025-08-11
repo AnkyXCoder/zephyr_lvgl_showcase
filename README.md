@@ -47,5 +47,5 @@ zephyr_lvgl_showcase/
 
 - [x] Add Temperature-Humidity sensor
 - [x] Add Pressure Sensor
-- [ ] Add IMU sensor
+- [x] Add IMU sensor
 - [ ] Add basic interface in LVGL with styles

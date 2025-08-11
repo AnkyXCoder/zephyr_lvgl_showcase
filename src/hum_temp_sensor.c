@@ -1,9 +1,9 @@
 
 #include "hum_temp_sensor.h"
 
-#include <zephyr/kernel.h>
 #include <zephyr/device.h>
 #include <zephyr/drivers/sensor.h>
+#include <zephyr/kernel.h>
 #include <zephyr/sys/util.h>
 
 #include <zephyr/logging/log.h>
@@ -22,42 +22,42 @@ const struct device *const hts_dev = DEVICE_DT_GET(DT_ALIAS(ht_sensor));
 
 void hum_temp_sensor_process_sample(void)
 {
-	if (!device_is_ready(hts_dev)) {
-		LOG_ERR("sensor: %s device not ready.", hts_dev->name);
-		return;
-	}
+    if (!device_is_ready(hts_dev)) {
+        LOG_ERR("sensor: %s device not ready.", hts_dev->name);
+        return;
+    }
 
-	if (sensor_sample_fetch(hts_dev) < 0) {
-		LOG_ERR("Sensor sample update error");
-		return;
-	}
+    if (sensor_sample_fetch(hts_dev) < 0) {
+        LOG_ERR("Sensor sample update error");
+        return;
+    }
 
-	struct sensor_value temp, hum;
-	if (sensor_channel_get(hts_dev, SENSOR_CHAN_AMBIENT_TEMP, &temp) < 0) {
-		LOG_ERR("Cannot read HTS221 temperature channel");
-		return;
-	}
+    struct sensor_value temp, hum;
+    if (sensor_channel_get(hts_dev, SENSOR_CHAN_AMBIENT_TEMP, &temp) < 0) {
+        LOG_ERR("Cannot read HTS221 temperature channel");
+        return;
+    }
 
-	if (sensor_channel_get(hts_dev, SENSOR_CHAN_HUMIDITY, &hum) < 0) {
-		LOG_ERR("Cannot read HTS221 humidity channel");
-		return;
-	}
+    if (sensor_channel_get(hts_dev, SENSOR_CHAN_HUMIDITY, &hum) < 0) {
+        LOG_ERR("Cannot read HTS221 humidity channel");
+        return;
+    }
 
-	/* display temperature */
-	LOG_INF("Temperature:%.1f C", sensor_value_to_double(&temp));
+    /* display temperature */
+    LOG_INF("Temperature:%.1f C", sensor_value_to_double(&temp));
 
-	/* display humidity */
-	LOG_INF("Relative Humidity:%.1f%%", sensor_value_to_double(&hum));
+    /* display humidity */
+    LOG_INF("Relative Humidity:%.1f%%", sensor_value_to_double(&hum));
 }
 
 int hun_temp_sensor_init(void)
 {
-	if (!device_is_ready(hts_dev)) {
-		LOG_ERR("sensor: %s device not ready.", hts_dev->name);
-		return -1;
-	}
+    if (!device_is_ready(hts_dev)) {
+        LOG_ERR("sensor: %s device not ready.", hts_dev->name);
+        return -1;
+    }
 
-	hum_temp_sensor_process_sample();
+    hum_temp_sensor_process_sample();
 
-	return 0;
+    return 0;
 }
