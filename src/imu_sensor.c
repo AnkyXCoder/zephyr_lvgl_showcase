@@ -27,7 +27,7 @@
 #define IMU_THREAD_STACK_SIZE 768
 #define IMU_THREAD_PRIORITY   5
 
-#define IMU_SAMPLE_DELAY 500 // 500 milli-seconds
+#define IMU_SAMPLE_DELAY 1 // 1 Second
 
 #if DT_NODE_EXISTS(DT_ALIAS(imu_sensor))
 #define HUM_TEMP_NODE DT_ALIAS(imu_sensor)
@@ -41,16 +41,13 @@ static const struct device *const imu_dev = DEVICE_DT_GET(DT_ALIAS(imu_sensor));
 //------------------------------------------------------------------------------
 
 typedef struct {
-    double accel_x;
-    double accel_y;
-    double accel_z;
-} accel_t;
+    double x;
+    double y;
+    double z;
+} imu_sample_t;
 
-typedef struct {
-    double gyro_x;
-    double gyro_y;
-    double gyro_z;
-} gyro_t;
+typedef imu_sample_t accel_t;
+typedef imu_sample_t gyro_t;
 
 //------------------------------------------------------------------------------
 // Private Variables
@@ -88,18 +85,15 @@ static void imu_sensor_thread(void *arg0, void *arg1, void *arg2)
     while (1) {
         accel_t accel;
         gyro_t gyro;
-        char out_str[64];
 
         if (imu_sensor_sample_process(&accel, &gyro) < 0) {
             return;
         }
 
-        sprintf(out_str, "accel x:%f ms/2 y:%f ms/2 z:%f ms/2", accel.accel_x, accel.accel_y, accel.accel_z);
-        LOG_INF("Accel: %s", out_str);
+        LOG_INF("Accel (m*s^-2): x:%.3f y:%.3f z:%.3f", accel.x, accel.y, accel.z);
+        LOG_INF("Gyro (dps): x:%.3f y:%.3f z:%.3f", gyro.x, gyro.y, gyro.z);
 
-        sprintf(out_str, "gyro x:%f dps y:%f dps z:%f dps", gyro.gyro_x, gyro.gyro_y, gyro.gyro_z);
-        LOG_INF("Gyro: %s", out_str);
-        k_sleep(K_MSEC(IMU_SAMPLE_DELAY));
+        k_sleep(K_SECONDS(IMU_SAMPLE_DELAY));
     }
 }
 /**
@@ -136,9 +130,9 @@ static int imu_sensor_sample_process(accel_t *accel_val, gyro_t *gyro_val)
         LOG_ERR("sensor: %s read accel channel failed", imu_dev->name);
         return -EINVAL;
     }
-    accel_val->accel_x = sensor_value_to_double(&accel_x);
-    accel_val->accel_y = sensor_value_to_double(&accel_y);
-    accel_val->accel_z = sensor_value_to_double(&accel_z);
+    accel_val->x = sensor_value_to_double(&accel_x);
+    accel_val->y = sensor_value_to_double(&accel_y);
+    accel_val->z = sensor_value_to_double(&accel_z);
 
     /* IMU gyro */
     if (sensor_sample_fetch_chan(imu_dev, SENSOR_CHAN_GYRO_XYZ) < 0) {
@@ -153,9 +147,9 @@ static int imu_sensor_sample_process(accel_t *accel_val, gyro_t *gyro_val)
         return -EINVAL;
     }
 
-    gyro_val->gyro_x = sensor_value_to_double(&gyro_x);
-    gyro_val->gyro_y = sensor_value_to_double(&gyro_y);
-    gyro_val->gyro_z = sensor_value_to_double(&gyro_z);
+    gyro_val->x = sensor_value_to_double(&gyro_x);
+    gyro_val->y = sensor_value_to_double(&gyro_y);
+    gyro_val->z = sensor_value_to_double(&gyro_z);
     return 0;
 }
 

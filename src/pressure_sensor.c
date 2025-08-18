@@ -27,7 +27,7 @@
 #define PS_THREAD_STACK_SIZE 512
 #define PS_THREAD_PRIORITY   5
 
-#define PS_SAMPLE_DELAY 10 // 10 Seconds
+#define PS_SAMPLE_DELAY 1 // 1 Second
 
 #if DT_NODE_EXISTS(DT_ALIAS(pressure_sensor))
 #define PRESSURE_NODE DT_ALIAS(pressure_sensor)
@@ -44,7 +44,7 @@ const struct device *const pressure_dev = DEVICE_DT_GET(DT_ALIAS(pressure_sensor
 // Private Variables
 //------------------------------------------------------------------------------
 
-LOG_MODULE_REGISTER(pressure);
+LOG_MODULE_REGISTER(press);
 
 K_THREAD_STACK_DEFINE(ps_stack_area, PS_THREAD_STACK_SIZE);
 
@@ -112,7 +112,7 @@ static int pressure_sensor_process_sample(double *pressure)
 
     *pressure = sensor_value_to_double(&pressure_val);
     if (sensor_channel_get(pressure_dev, SENSOR_CHAN_AMBIENT_TEMP, &temp_val) < 0) {
-        printf("Cannot read LPS22HH temperature channel\n");
+        LOG_ERR("sensor: %s cannot read temperature channel", pressure_dev->name);
         return -EINVAL;
     }
 
@@ -131,6 +131,16 @@ static int pressure_sensor_init(void)
     if (!device_is_ready(pressure_dev)) {
         LOG_ERR("sensor: %s device not ready.", pressure_dev->name);
         return -ENODEV;
+    }
+
+    /* set sampling frequency to 100 Hz */
+    struct sensor_value odr_attr;
+    odr_attr.val1 = 100;
+    odr_attr.val2 = 0;
+
+    if (sensor_attr_set(pressure_dev, SENSOR_CHAN_ALL, SENSOR_ATTR_SAMPLING_FREQUENCY, &odr_attr) < 0) {
+        printk("Cannot set sampling frequency for LPS22HH\n");
+        return -EINVAL;
     }
 
     ps_tid = k_thread_create(&ps_thread, ps_stack_area, K_THREAD_STACK_SIZEOF(ps_stack_area), ps_sensor_thread, NULL,
