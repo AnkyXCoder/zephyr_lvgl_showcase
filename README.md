@@ -37,15 +37,25 @@ zephyr_lvgl_showcase/
 ├── README.md           # This file
 └── src/
     ├── main.c              # Main application entry point and thread setup
-    ├── hum_temp_sensor.h
-    ├── hum_temp_sensor.c   # Humidity-Temperature Sensor setup
-    ├── pressure_senosr.h
-    └── pressure_senosr.c   # Pressure Sensor setup
+    ├── hum_sensor.c        # Humidity Sensor setup
+    ├── imu_sensor.c        # IMU Sensor setup
+    ├── magn_sensor.c       # Magnetometer Sensor setup
+    ├── pressure_sensor.c   # Pressure Sensor setup
+    ├── sensor_logger.c     # Sensor Logger setup
+    └── temp_sensor.c       # Temperature Sensor setup
 ```
 
 ## 📅 TODO list
 
-- [x] Add Temperature-Humidity sensor
+- [x] Add Temperature Sensor
+- [x] Add Humidity Sensor
 - [x] Add Pressure Sensor
-- [x] Add IMU sensor
-- [ ] Add basic interface in LVGL with styles
+- [x] Add IMU Sensor
+- [x] Add Magnetometer Sensor
+- [ ] Sensor Logger functionality
+- [ ] IPC Mechanism to send data to Sensor Logger
+- [ ] BT Peripheral functionality
+- [ ] WiFi functionality
+- [ ] MQTT functionality
+- [ ] Display sensor data on SSD1306
+- [ ] Display sensor data on Touch Display
