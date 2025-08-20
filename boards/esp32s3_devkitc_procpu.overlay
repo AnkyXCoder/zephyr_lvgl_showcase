@@ -63,25 +63,22 @@
     ts: stts751@4a {
         compatible = "st,stts751";
         reg = <0x4a>;
-        drdy-gpios = <&arduino_header 4 GPIO_ACTIVE_LOW>; /* A4 */
     };
 
     lps22hh: lps22hh@5d {
         compatible = "st,lps22hh";
         reg = <0x5d>;
-        drdy-gpios = <&arduino_header 12 GPIO_ACTIVE_HIGH>; /* D6 */
     };
 
     lis2mdl: lis2mdl@1e {
         compatible = "st,lis2mdl";
         reg = <0x1e>;
-        irq-gpios = <&arduino_header 2 GPIO_ACTIVE_HIGH>; /* A2 */
     };
 
     lsm6dso: lsm6dso@6b {
         compatible = "st,lsm6dso";
         reg = <0x6b>;
-        irq-gpios = <&arduino_header 11 GPIO_ACTIVE_HIGH>; /* D5 */
+        irq-gpios = <&gpio0 11 GPIO_ACTIVE_HIGH>;
         int-pin = <2>;
     };
 };
